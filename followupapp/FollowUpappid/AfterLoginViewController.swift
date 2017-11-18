@@ -14,27 +14,13 @@
 import UIKit
 import BluemixAppID
 import BMSCore
-
-let newGuest = "We created a new anonymous profile for the guest user. We will store the user’s food preferences there. Note that this anonymous user profile is only available from this device."
-let progressive = "A guest user logged-in for the first time. App ID assigned this user’s identity to their anonymous profile, so their previous selections are saved. The user now has an identified profile, and the anonymous token previously used to access his profile is now invalid."
-let returningGuest = "A guest user returned. The app uses his existing anonymous profile, so his previous selections are saved. Note that this anonymous user profile is only available from this device."
-let returningLogin = "An identified user returned to the app with the same identity. The app accesses his identified profile and the previous selections that he made."
-let otherLogin = "The user signed back into the device with a new identity (i.e. was with Facebook, now with Google).If he used this identity previously - the app uses the profile for that existing identity. Else, App ID creates a new profile."
-let differentLogin = "A user started to use the app anonymously, made some selections, and then logged in. Since he had logged in in the past, the app switches over to his existing identified profile in place of his anonymous profile. The user sees selections he made as an identified user."
-let newLogin = "We created a new anonymous profile for the guest user. We will store the user’s food preferences there. Note that this anonymous user profile is only available from this device. "
+import Alamofire
+import SwiftyJSON
 
 class AfterLoginViewController: UIViewController {
-    
-    @IBOutlet weak var selection1: UIView!
-    @IBOutlet weak var selection2: UIView!
-    @IBOutlet weak var selection3: UIView!
+
     
     @IBOutlet weak var toptext: UILabel!
-    @IBOutlet weak var pizzaIcon: UIImageView!
-    
-    @IBOutlet weak var selectionIcon1: UIImageView!
-    @IBOutlet weak var selectionIcon2: UIImageView!
-    @IBOutlet weak var selectionIcon3: UIImageView!
     @IBOutlet weak var profilePic: UIImageView!
     
     @IBOutlet weak var hintMessageView: UILabel!
@@ -47,7 +33,6 @@ class AfterLoginViewController: UIViewController {
     
     var accessToken:AccessToken?
     var idToken:IdentityToken?
-    var foodSelection : Array<String> = []
     var firstLogin: Bool = false
     var hintMessage : String?
     
@@ -60,7 +45,6 @@ class AfterLoginViewController: UIViewController {
         
         
         showLoginInfo()
-        loadFoodSelectionFromServer()
         UIApplication.shared.keyWindow?.rootViewController = self
         super.viewDidLoad()
     }
@@ -80,19 +64,7 @@ class AfterLoginViewController: UIViewController {
         
         let displayName = idToken?.name ?? (idToken?.email?.components(separatedBy: "@"))?[0] ?? "Guest"
         self.successMsg.text = "Welcome " + displayName + ""
-        
-    }
-    
-    func selection1Clicked(sender: UITapGestureRecognizer) {
-        updateFoodSelection(foodItem: "pizza")
-    }
-    
-    func selection2Clicked(sender: UITapGestureRecognizer) {
-        updateFoodSelection(foodItem: "hamburger")
-    }
-    
-    func selection3Clicked(sender: UITapGestureRecognizer) {
-        updateFoodSelection(foodItem: "salad")
+        ServerlessAPI.sharedInstance.userData(accessToken: accessToken!,idToken: idToken!)
     }
     
     class LoginDelegate : AuthorizationDelegate {
@@ -108,8 +80,6 @@ class AfterLoginViewController: UIViewController {
             controller.accessToken = accessToken;
             controller.idToken = identityToken;
             
-            controller.selectHintMessage(prevAnon: (TokenStorageManager.sharedInstance.loadStoredToken() != nil), prevId: TokenStorageManager.sharedInstance.loadUserId(), currentAnon: accessToken.isAnonymous, currentId: accessToken.subject!)
-            
             if accessToken.isAnonymous {
                 TokenStorageManager.sharedInstance.storeToken(token: accessToken.raw)
             } else {
@@ -123,7 +93,6 @@ class AfterLoginViewController: UIViewController {
                
             }
             
-             controller.loadFoodSelectionFromServer()
         }
         
         public func onAuthorizationCanceled() {
@@ -135,42 +104,6 @@ class AfterLoginViewController: UIViewController {
         }
     }
     
-    func selectHintMessage(prevAnon: Bool, prevId: String?, currentAnon: Bool, currentId: String) {
-        if prevId != nil {
-            if prevAnon {
-                if currentAnon {
-                    if currentId == prevId {
-                        hintMessage = returningGuest
-                    } else {
-                        hintMessage = newGuest
-                    }
-                } else {
-                    if currentId == prevId {
-                        hintMessage = progressive
-                    } else {
-                        hintMessage = differentLogin
-                    }
-                }
-            } else {
-                if currentAnon {
-                    hintMessage = newGuest
-                } else {
-                    if currentId == prevId {
-                        hintMessage = returningLogin
-                    } else {
-                        hintMessage = otherLogin
-                    }
-                }
-            }
-        } else {
-            if currentAnon {
-                hintMessage = newGuest
-            } else {
-                hintMessage = newLogin
-            }
-        }
-    }
-    
     func topBarClicked(sender: UITapGestureRecognizer) {
 
         if (accessToken?.isAnonymous)! {
@@ -179,18 +112,64 @@ class AfterLoginViewController: UIViewController {
     }
 
     @IBAction func showToken(_ sender: Any) {
-        
     
             DispatchQueue.main.async {
                 let tokenView  = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TokenView") as? TokenView
                 tokenView?.accessToken = self.accessToken
+                print("Token:",self.accessToken!)
                 tokenView?.idToken = self.idToken
                 self.present(tokenView!, animated: true, completion: nil)
             }
-        
-     
 
     }
+    
+    @IBAction func submitFeedback(_ sender: Any) {
+        
+        var accessTokenValue: String?
+        var idTokenValue: String?
+        
+        if let idTokenPayload = idToken?.payload {
+            idTokenValue = try? Utils.JSONStringify(idTokenPayload as AnyObject, prettyPrinted: true)
+            idTokenValue = idTokenValue?.replacingOccurrences(of: "\\/", with: "/")
+        }
+        
+        if let accessTokenPayload = accessToken?.payload {
+           accessTokenValue = try? Utils.JSONStringify(accessTokenPayload as AnyObject, prettyPrinted: true)
+           accessTokenValue = accessTokenValue?.replacingOccurrences(of: "\\/", with: "/")
+        }
+        
+        
+        let headers: HTTPHeaders = [
+            "Authorization": "Bearer " + accessTokenValue! + idTokenValue!,
+            "Accept": "application/json"
+        ]
+        
+        
+        print("ID TOKEN", idTokenValue!)
+      
+        
+        var data = [String:String]()
+        data["test"] = "test123"
+        print("Authorization",headers["Authorization"]!)
+        let jsonData = try? JSONSerialization.data(withJSONObject: data, options: [])
+        let jsonString = String(data: jsonData!, encoding: .utf8)
+        print(jsonString! as Any)
+
+        
+        //print("JSONDATA",jsonData.stringValue)
+        
+        let parameters : Parameters = [
+            "cloudantId": "test",
+            "cloudantDbName": "feedback",
+            "cloudantBody": jsonString!,
+        ]
+        
+        
+        Alamofire.request("https://openwhisk.ng.bluemix.net/api/v1/web/Dev-Advocates_demos/serverlessfollowup/add-user",method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
+            debugPrint(response)
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         
@@ -206,78 +185,6 @@ class AfterLoginViewController: UIViewController {
         
     }*/
     
-    func updateFoodSelection(foodItem : String) {
-        if let index = foodSelection.index(of: foodItem) {
-            foodSelection.remove(at: index)
-        } else {
-            foodSelection.append(foodItem)
-        }
-        
-        //updateUI()
-        
-        
-        AppID.sharedInstance.userAttributeManager?.setAttribute(key: "foodSelection", value: getFoodSelectionJson(), completionHandler: { (error, attributes) in
-            guard error == nil else {
-                print("Failed to store selection in profile")
-                return
-            }
-            print("stored selection in profile")
-            
-        })
-    }
-    
-    func loadFoodSelectionFromServer() {
-        let accessTokenString = (accessToken?.raw)!
-        AppID.sharedInstance.userAttributeManager?.getAttributes(accessTokenString: accessTokenString, completionHandler: { (error, attributes) in
-            guard error == nil else {
-                print("Failed to load selection from profile", error!)
-                return
-            }
-            
-            // we give all non guest users 150 points
-            if (attributes?["points"] == nil) {
-                
-                AppID.sharedInstance.userAttributeManager?.setAttribute(key: "points", value: "150", accessTokenString: accessTokenString, completionHandler: { (error, attributes) in
-                    guard error == nil else {
-                        print("Failed to save points", error!)
-                        return
-                    }
-
-                })
-                
-            } else {
-                // this user already got points
-                if (self.hintMessage == newLogin) {
-                    self.hintMessage = returningLogin;
-                }
-            }
-            
-            self.saveFoodSelection(jsonArrayString: attributes?["foodSelection"] as? String)
-            //self.updateUI()
-            
-        })
-    }
-    
-    func getFoodSelectionJson() -> String {
-        do {
-        let jsonData = try JSONSerialization.data(withJSONObject: foodSelection)
-        return String(data: jsonData, encoding: .utf8)!
-        } catch {
-            return "[]"
-        }
-    }
-    
-    func saveFoodSelection(jsonArrayString : String?) {
-        if jsonArrayString != nil {
-            do {
-                let array = try JSONSerialization.jsonObject(with: jsonArrayString!.data(using: .utf8)!)
-                foodSelection = array as! Array<String>
-            } catch {}
-        } else {
-            foodSelection = []
-        }
-       
-    }
     
 }
 

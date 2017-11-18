@@ -177,6 +177,9 @@
                                 <color key="backgroundColor" red="0.40020424127578735" green="0.6617279052734375" blue="0.92348921298980713" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="18"/>
                                 <state key="normal" title="Submit"/>
+                                <connections>
+                                    <action selector="submitFeedback:" destination="Tsb-Sj-gNf" eventType="touchUpInside" id="rUX-oQ-TL4"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="clip" translatesAutoresizingMaskIntoConstraints="NO" id="Q5h-kS-BSu">
                                 <rect key="frame" x="235" y="603" width="124" height="44"/>

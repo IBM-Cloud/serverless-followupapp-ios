@@ -33,8 +33,6 @@ class ViewController: UIViewController {
             afterLoginView?.accessToken = accessToken
             afterLoginView?.idToken = identityToken
             
-                afterLoginView?.selectHintMessage(prevAnon: (TokenStorageManager.sharedInstance.loadStoredToken() != nil), prevId: TokenStorageManager.sharedInstance.loadUserId(), currentAnon: accessToken.isAnonymous, currentId: accessToken.subject!)
-            
             if accessToken.isAnonymous {
                 TokenStorageManager.sharedInstance.storeToken(token: accessToken.raw)
             } else {

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4690A2801E8CE27F00C8D792 /* anonymous user.png in Resources */ = {isa = PBXBuildFile; fileRef = 4690A27F1E8CE27F00C8D792 /* anonymous user.png */; };
+		95B2F87B1FBDACA4009B0655 /* ServerlessAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95B2F87A1FBDACA4009B0655 /* ServerlessAPI.swift */; };
 		BD1D08851EA6383D00DF7F63 /* select.png in Resources */ = {isa = PBXBuildFile; fileRef = BD1D08841EA6383D00DF7F63 /* select.png */; };
 		BD1D08871EA7430300DF7F63 /* pizza.png in Resources */ = {isa = PBXBuildFile; fileRef = BD1D08861EA7430300DF7F63 /* pizza.png */; };
 		BD4CE2401E8BDB780018989D /* anonymous.png in Resources */ = {isa = PBXBuildFile; fileRef = BD4CE23F1E8BDB780018989D /* anonymous.png */; };
@@ -31,6 +32,7 @@
 		28E76BE7436EFC4DE4BC2D33 /* Pods-FollowUpappid.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FollowUpappid.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FollowUpappid/Pods-FollowUpappid.debug.xcconfig"; sourceTree = "<group>"; };
 		4690A27F1E8CE27F00C8D792 /* anonymous user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "anonymous user.png"; sourceTree = "<group>"; };
 		6E4A9588D2E02D651A0A0001 /* Pods_FollowUpappid.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FollowUpappid.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		95B2F87A1FBDACA4009B0655 /* ServerlessAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerlessAPI.swift; sourceTree = "<group>"; };
 		ABD73AFBCEA143CF9558041A /* BMSCredentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BMSCredentials.plist; sourceTree = "<group>"; };
 		BD1D08841EA6383D00DF7F63 /* select.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = select.png; sourceTree = "<group>"; };
 		BD1D08861EA7430300DF7F63 /* pizza.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pizza.png; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 				EFFC7C5D1E34C71500C3CCB5 /* TokenView.swift */,
 				EFFC7C5E1E34C71500C3CCB5 /* ViewController.swift */,
 				BD4F2CB61E8908E200BF4057 /* TokenStorage.swift */,
+				95B2F87A1FBDACA4009B0655 /* ServerlessAPI.swift */,
 			);
 			path = FollowUpappid;
 			sourceTree = "<group>";
@@ -263,15 +266,19 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-FollowUpappid/Pods-FollowUpappid-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/BMSAnalyticsAPI/BMSAnalyticsAPI.framework",
 				"${BUILT_PRODUCTS_DIR}/BMSCore/BMSCore.framework",
 				"${BUILT_PRODUCTS_DIR}/BluemixAppID/BluemixAppID.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BMSAnalyticsAPI.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BMSCore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BluemixAppID.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -289,6 +296,7 @@
 				EFFC7C5F1E34C71500C3CCB5 /* AfterLoginViewController.swift in Sources */,
 				EFFC7C6C1E34C71500C3CCB5 /* ViewController.swift in Sources */,
 				BD4F2CB71E8908E200BF4057 /* TokenStorage.swift in Sources */,
+				95B2F87B1FBDACA4009B0655 /* ServerlessAPI.swift in Sources */,
 				EFFC7C6B1E34C71500C3CCB5 /* TokenView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
