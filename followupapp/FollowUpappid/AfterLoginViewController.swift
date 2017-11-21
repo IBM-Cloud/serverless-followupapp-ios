@@ -17,27 +17,26 @@ import BMSCore
 import Alamofire
 import SwiftyJSON
 
-class AfterLoginViewController: UIViewController {
-
+class AfterLoginViewController: UIViewController,UITextViewDelegate {
+    
     
     @IBOutlet weak var toptext: UILabel!
     @IBOutlet weak var profilePic: UIImageView!
-    
-    @IBOutlet weak var hintMessageView: UILabel!
     @IBOutlet weak var topBar: UIView!
-    @IBOutlet weak var nextLabel: UILabel!
     @IBOutlet weak var successMsg: UILabel!
     // function for displaying login
-  //  @IBOutlet weak var warningText: UILabel!
-    
-    
+    //  @IBOutlet weak var warningText: UILabel!
+    @IBOutlet weak var submitButton: UIButton!
+    @IBOutlet weak var feedbackText: UITextView!
     var accessToken:AccessToken?
     var idToken:IdentityToken?
+    
     var firstLogin: Bool = false
     var hintMessage : String?
     
     override func viewDidLoad() {
-   
+        submitButton.isEnabled = false;
+        feedbackText.delegate = self;
         self.profilePic.layer.cornerRadius = self.profilePic.frame.size.height / 2;
         self.profilePic.layer.masksToBounds = true;
         
@@ -48,7 +47,7 @@ class AfterLoginViewController: UIViewController {
         UIApplication.shared.keyWindow?.rootViewController = self
         super.viewDidLoad()
     }
-
+    
     func showLoginInfo() {
         
         // Getting and presenting the user picture
@@ -59,12 +58,12 @@ class AfterLoginViewController: UIViewController {
             toptext.text = "";
         } else {
             toptext.text = " Login";
-    
+            
         }
         
         let displayName = idToken?.name ?? (idToken?.email?.components(separatedBy: "@"))?[0] ?? "Guest"
         self.successMsg.text = "Welcome " + displayName + ""
-        ServerlessAPI.sharedInstance.userData(accessToken: accessToken!,idToken: idToken!)
+        ServerlessAPI.sharedInstance.addUser(accessToken: accessToken!,idToken: idToken!)
     }
     
     class LoginDelegate : AuthorizationDelegate {
@@ -90,7 +89,7 @@ class AfterLoginViewController: UIViewController {
             
             DispatchQueue.main.async {
                 self.controller.showLoginInfo()
-               
+                
             }
             
         }
@@ -105,68 +104,38 @@ class AfterLoginViewController: UIViewController {
     }
     
     func topBarClicked(sender: UITapGestureRecognizer) {
-
+        
         if (accessToken?.isAnonymous)! {
             AppID.sharedInstance.loginWidget?.launch(accessTokenString: TokenStorageManager.sharedInstance.loadStoredToken(), delegate: LoginDelegate(controller: self))
         }
     }
-
-    @IBAction func showToken(_ sender: Any) {
     
-            DispatchQueue.main.async {
-                let tokenView  = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TokenView") as? TokenView
-                tokenView?.accessToken = self.accessToken
-                print("Token:",self.accessToken!)
-                tokenView?.idToken = self.idToken
-                self.present(tokenView!, animated: true, completion: nil)
-            }
-
+    @IBAction func showToken(_ sender: Any) {
+        
+        DispatchQueue.main.async {
+            let tokenView  = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TokenView") as? TokenView
+            tokenView?.accessToken = self.accessToken
+            print("Token:",self.accessToken!)
+            tokenView?.idToken = self.idToken
+            self.present(tokenView!, animated: true, completion: nil)
+        }
+        
     }
     
     @IBAction func submitFeedback(_ sender: Any) {
         
-        var accessTokenValue: String?
-        var idTokenValue: String?
-        
-        if let idTokenPayload = idToken?.payload {
-            idTokenValue = try? Utils.JSONStringify(idTokenPayload as AnyObject, prettyPrinted: true)
-            idTokenValue = idTokenValue?.replacingOccurrences(of: "\\/", with: "/")
-        }
-        
-        if let accessTokenPayload = accessToken?.payload {
-           accessTokenValue = try? Utils.JSONStringify(accessTokenPayload as AnyObject, prettyPrinted: true)
-           accessTokenValue = accessTokenValue?.replacingOccurrences(of: "\\/", with: "/")
-        }
-        
-        
-        let headers: HTTPHeaders = [
-            "Authorization": "Bearer " + accessTokenValue! + idTokenValue!,
-            "Accept": "application/json"
-        ]
-        
-        
-        print("ID TOKEN", idTokenValue!)
-      
-        
-        var data = [String:String]()
-        data["test"] = "test123"
-        print("Authorization",headers["Authorization"]!)
-        let jsonData = try? JSONSerialization.data(withJSONObject: data, options: [])
-        let jsonString = String(data: jsonData!, encoding: .utf8)
-        print(jsonString! as Any)
-
-        
-        //print("JSONDATA",jsonData.stringValue)
-        
-        let parameters : Parameters = [
-            "cloudantId": "test",
-            "cloudantDbName": "feedback",
-            "cloudantBody": jsonString!,
-        ]
-        
-        
-        Alamofire.request("https://openwhisk.ng.bluemix.net/api/v1/web/Dev-Advocates_demos/serverlessfollowup/add-user",method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
-            debugPrint(response)
+        ServerlessAPI.sharedInstance.sendFeedback(accessToken: accessToken!,idToken: idToken!, message: feedbackText.text)
+        let alert = UIAlertController(title: "Submitted", message: "Thanks for your feedback", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { action in
+            self.feedbackText.text = ""
+            self.textViewDidChange(self.feedbackText)
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        if textView == self.feedbackText {
+            self.submitButton.isEnabled = !textView.text.isEmpty
         }
     }
     
@@ -174,18 +143,4 @@ class AfterLoginViewController: UIViewController {
         super.didReceiveMemoryWarning()
         
     }
-    
-    /*func updateUI() {
-        DispatchQueue.main.async {
-            self.selectionIcon1.isHidden = !self.foodSelection.contains("pizza")
-            self.selectionIcon2.isHidden = !self.foodSelection.contains("hamburger")
-            self.selectionIcon3.isHidden = !self.foodSelection.contains("salad")
-            self.hintMessageView.text = self.hintMessage
-        }
-        
-    }*/
-    
-    
 }
-
-

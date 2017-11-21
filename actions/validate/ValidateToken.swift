@@ -8,11 +8,25 @@ func main(args: [String:Any]) -> [String:Any]  {
         "status": str,
         "isactive": str
     ]
+    guard let requestHeaders = args["__ow_headers"] as! [String:Any]?,
+        let authorizationHeader = requestHeaders["authorization"] as? String
+        else {
+            print("Error: Authorization headers missing.")
+            return result
+    }
     
+    guard let authorizationComponents = authorizationHeader.components(separatedBy: " ") as [String]?,
+        let bearer = authorizationComponents[0] as? String, bearer == "Bearer",
+        let accessToken = authorizationComponents[1] as? String,
+        let idToken = authorizationComponents[2] as? String
+        else {
+            print("Error: Authorization header is malformed.")
+            return result
+    }
     guard let username = args["services.appid.clientId"] as? String,
         let password = args["services.appid.secret"] as? String,
-        let tenantid = args["tenantid"] as? String,
-        let token = args["accesstoken"] as? String
+        let tenantid = args["tenantid"] as? String
+        //let accessToken = args["accesstoken"] as? String
         else{
             print("Error: missing a required parameter for basic Auth.")
             return result
@@ -25,9 +39,9 @@ func main(args: [String:Any]) -> [String:Any]  {
         "authorization": "Basic \(base64LoginString)",
         "cache-control": "no-cache",
         ]
-    let postData = "tenantid=\(tenantid)&token=\(token)"
+    let postData = "tenantid=\(tenantid)&token=\(accessToken)"
     
-    var request = URLRequest(url: URL(string: "https://appid-oauth.ng.bluemix.net/oauth/v3/\(tenantid)/introspect")! as URL,
+    var request = URLRequest(url: URL(string: (args["services.appid.url"] as? String)! + "/introspect")! as URL,
                              cachePolicy: .useProtocolCachePolicy,
                              timeoutInterval: 10.0)
     request.httpMethod = "POST"
@@ -47,8 +61,6 @@ func main(args: [String:Any]) -> [String:Any]  {
             if httpStatus.statusCode == 200
             {
                 let responseString = String(data: data, encoding: .utf8)
-                //var dictonary:[String : Bool]?
-                
                 guard let data = responseString?.data(using: String.Encoding.utf8),
                     let dictonary = try? JSONSerialization.jsonObject(with: data, options: []) as? [String:Bool]
                     else {
@@ -63,7 +75,6 @@ func main(args: [String:Any]) -> [String:Any]  {
                         
                     ]
                 }
-                
             }
             else
             {
@@ -78,5 +89,28 @@ func main(args: [String:Any]) -> [String:Any]  {
     dataTask.resume()
     _ = semaphore.wait(timeout: DispatchTime.distantFuture)
     //semaphore.wait()
-    return result
+    guard let cloudantBody = args["cloudantBody"] as? String,
+        let cloudantId = args["cloudantId"] as? String,
+        let cloudantDbName = args["cloudantDbName"] as? String
+        else{
+            print("Cloudant parameters missing.")
+            return result
+    }
+    var args: [String:Any] = [
+        "_accessToken": str,
+        "_idToken": str
+    ]
+    if(result["isactive"] != nil && result["isactive"]! as! Bool)
+    {
+        args = [
+            "_accessToken": accessToken,
+            "_idToken": idToken,
+            "cloudantBody" : cloudantBody,
+            "cloudantId" : cloudantId,
+            "cloudantDbName" : cloudantDbName
+        ]
+        return args
+    }
+    return args
 }
+

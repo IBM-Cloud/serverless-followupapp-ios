@@ -27,12 +27,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let region = AppID.REGION_US_SOUTH
             let bmsclient = BMSClient.sharedInstance
                 let backendGUID = dictionary["authTenantId"] as? String
+                let serverlessBackendURL = dictionary["serverlessBackendUrl"] as? String
                 bmsclient.initialize(bluemixRegion: region)
                 let appid = AppID.sharedInstance
                 appid.initialize(tenantId: backendGUID!, bluemixRegion: region)
                 let appIdAuthorizationManager = AppIDAuthorizationManager(appid:appid)
                 bmsclient.authorizationManager = appIdAuthorizationManager
             TokenStorageManager.sharedInstance.initialize(tenantId: backendGUID!)
+            ServerlessAPI.sharedInstance.initialize(tenantId: backendGUID!,serverlessBackendURL: serverlessBackendURL!)
         }
         
         return true

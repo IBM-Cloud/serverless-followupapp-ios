@@ -216,7 +216,9 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="feedbackText" destination="ZZP-b9-7s6" id="dMQ-Kg-vPW"/>
                         <outlet property="profilePic" destination="RAP-C7-e6g" id="yZI-55-kvM"/>
+                        <outlet property="submitButton" destination="K5p-Kc-MSp" id="JzR-5g-fAE"/>
                         <outlet property="successMsg" destination="Yug-oZ-kmQ" id="TlY-XI-xHV"/>
                         <outlet property="topBar" destination="kJj-4P-XE5" id="d8p-Bb-Pya"/>
                         <outlet property="toptext" destination="aqX-LT-rA2" id="R0P-Fw-lhy"/>
