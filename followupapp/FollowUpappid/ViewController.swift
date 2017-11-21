@@ -40,8 +40,6 @@ class ViewController: UIViewController {
             }
             TokenStorageManager.sharedInstance.storeUserId(userId: accessToken.subject)
             
-        
-            
             DispatchQueue.main.async {
                 mainView?.present(afterLoginView!, animated: true, completion: nil)
             }

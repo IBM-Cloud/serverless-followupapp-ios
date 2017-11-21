@@ -12,6 +12,7 @@
 
 import UIKit
 import BMSCore
+import BMSPush
 import BluemixAppID
 @UIApplicationMain
 
@@ -20,6 +21,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        
+        let myBMSClient = BMSClient.sharedInstance
+        myBMSClient.initialize(bluemixRegion:BMSClient.Region.sydney )
+        myBMSClient.requestTimeout = 10.0 // seconds
+        
         // Initialize the AppID instance with your tenant ID and region
         // App Id initialization
         // NOTE: Enable Keychain Sharing capability in Xcode
@@ -36,7 +42,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             TokenStorageManager.sharedInstance.initialize(tenantId: backendGUID!)
             ServerlessAPI.sharedInstance.initialize(tenantId: backendGUID!,serverlessBackendURL: serverlessBackendURL!)
         }
-        
+        let notificationSettings = UIUserNotificationSettings(types: [.badge, .sound, .alert], categories: nil)
+        UIApplication.shared.registerUserNotificationSettings(notificationSettings)
+        UIApplication.shared.registerForRemoteNotifications()
         return true
     }    
     

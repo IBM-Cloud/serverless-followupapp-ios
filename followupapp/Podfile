@@ -5,5 +5,5 @@ target ‘FollowUpappid’ do
   use_frameworks!
 	pod 'BluemixAppID'
     pod 'Alamofire', '~> 4.5'
-    pod 'SwiftyJSON'
+    pod 'BMSPush', '~> 3.0'
 end

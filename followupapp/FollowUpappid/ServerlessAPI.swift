@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftyJSON
 import Alamofire
 import BluemixAppID
 
@@ -27,7 +26,6 @@ public class ServerlessAPI{
     
     func addUser(accessToken:AccessToken?, idToken:IdentityToken?)
     {
-        
         self.accessToken = accessToken
         self.idToken = idToken
         
@@ -59,7 +57,7 @@ public class ServerlessAPI{
             "cloudantBody": jsonString!,
             ]
         
-        Alamofire.request("\(serverlessBackendURL!)/register-user-sequence",method: .post, parameters: args, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
+        Alamofire.request("\(serverlessBackendURL!)/users-add-sequence",method: .post, parameters: args, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
             debugPrint(response)
         }
     }
@@ -80,7 +78,7 @@ public class ServerlessAPI{
         data["subject"] = accessToken?.subject!
         let jsonData = try? JSONSerialization.data(withJSONObject: data, options: [])
         let jsonString = String(data: jsonData!, encoding: .utf8)
-        
+    
         let args : Parameters = [
             "cloudantId": accessToken?.subject! as Any,
             "cloudantDbName": "feedback",
@@ -88,7 +86,7 @@ public class ServerlessAPI{
             "cloudantBody": jsonString!,
             ]
         
-        Alamofire.request("\(serverlessBackendURL!)/save-feedback-sequence",method: .post, parameters: args, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
+        Alamofire.request("\(serverlessBackendURL!)/feedback-put-sequence",method: .post, parameters: args, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
             debugPrint(response)
         }
     }

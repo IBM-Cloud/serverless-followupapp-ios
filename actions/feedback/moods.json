@@ -1,0 +1,24 @@
+{
+  "docs": [
+    {
+      "_id": "anger",
+      "template": "Dear {{name}}, we are sorry for the issue you encountered"
+    },
+    {
+      "_id": "disgust",
+      "template": "Dear {{name}}, we are sorry for the issue you encountered"
+    },
+    {
+      "_id": "fear",
+      "template": "Dear {{name}}, we are sorry for the issue you encountered"
+    },
+        {
+      "_id": "joy",
+      "template": "Thank you for your feedback!"
+    },
+    {
+      "_id": "sadness",
+      "template": "Dear {{name}}, we are sorry for the issue you encountered"
+    }
+  ]
+}

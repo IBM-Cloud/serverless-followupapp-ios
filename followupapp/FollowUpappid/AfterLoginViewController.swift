@@ -15,26 +15,29 @@ import UIKit
 import BluemixAppID
 import BMSCore
 import Alamofire
-import SwiftyJSON
 
 class AfterLoginViewController: UIViewController,UITextViewDelegate {
-    
+
     
     @IBOutlet weak var toptext: UILabel!
     @IBOutlet weak var profilePic: UIImageView!
+    
+    @IBOutlet weak var hintMessageView: UILabel!
     @IBOutlet weak var topBar: UIView!
+    @IBOutlet weak var nextLabel: UILabel!
     @IBOutlet weak var successMsg: UILabel!
     // function for displaying login
-    //  @IBOutlet weak var warningText: UILabel!
+  //  @IBOutlet weak var warningText: UILabel!
     @IBOutlet weak var submitButton: UIButton!
     @IBOutlet weak var feedbackText: UITextView!
     var accessToken:AccessToken?
     var idToken:IdentityToken?
-    
+   
     var firstLogin: Bool = false
     var hintMessage : String?
     
     override func viewDidLoad() {
+        
         submitButton.isEnabled = false;
         feedbackText.delegate = self;
         self.profilePic.layer.cornerRadius = self.profilePic.frame.size.height / 2;
@@ -46,8 +49,9 @@ class AfterLoginViewController: UIViewController,UITextViewDelegate {
         showLoginInfo()
         UIApplication.shared.keyWindow?.rootViewController = self
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
     }
-    
+
     func showLoginInfo() {
         
         // Getting and presenting the user picture
@@ -58,7 +62,7 @@ class AfterLoginViewController: UIViewController,UITextViewDelegate {
             toptext.text = "";
         } else {
             toptext.text = " Login";
-            
+    
         }
         
         let displayName = idToken?.name ?? (idToken?.email?.components(separatedBy: "@"))?[0] ?? "Guest"
@@ -89,7 +93,7 @@ class AfterLoginViewController: UIViewController,UITextViewDelegate {
             
             DispatchQueue.main.async {
                 self.controller.showLoginInfo()
-                
+               
             }
             
         }
@@ -104,22 +108,22 @@ class AfterLoginViewController: UIViewController,UITextViewDelegate {
     }
     
     func topBarClicked(sender: UITapGestureRecognizer) {
-        
+
         if (accessToken?.isAnonymous)! {
             AppID.sharedInstance.loginWidget?.launch(accessTokenString: TokenStorageManager.sharedInstance.loadStoredToken(), delegate: LoginDelegate(controller: self))
         }
     }
-    
+
     @IBAction func showToken(_ sender: Any) {
-        
-        DispatchQueue.main.async {
-            let tokenView  = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TokenView") as? TokenView
-            tokenView?.accessToken = self.accessToken
-            print("Token:",self.accessToken!)
-            tokenView?.idToken = self.idToken
-            self.present(tokenView!, animated: true, completion: nil)
-        }
-        
+    
+            DispatchQueue.main.async {
+                let tokenView  = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TokenView") as? TokenView
+                tokenView?.accessToken = self.accessToken
+                print("Token:",self.accessToken!)
+                tokenView?.idToken = self.idToken
+                self.present(tokenView!, animated: true, completion: nil)
+            }
+
     }
     
     @IBAction func submitFeedback(_ sender: Any) {
@@ -137,6 +141,10 @@ class AfterLoginViewController: UIViewController,UITextViewDelegate {
         if textView == self.feedbackText {
             self.submitButton.isEnabled = !textView.text.isEmpty
         }
+    }
+    
+    func didBecomeActive(_ notification: Notification) {
+        
     }
     
     override func didReceiveMemoryWarning() {
