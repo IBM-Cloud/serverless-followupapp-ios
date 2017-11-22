@@ -10,7 +10,6 @@
  *     limitations under the License.
  */
 
-
 import UIKit
 import BluemixAppID
 import BMSCore
@@ -21,13 +20,8 @@ class AfterLoginViewController: UIViewController,UITextViewDelegate {
     
     @IBOutlet weak var toptext: UILabel!
     @IBOutlet weak var profilePic: UIImageView!
-    
-    @IBOutlet weak var hintMessageView: UILabel!
     @IBOutlet weak var topBar: UIView!
-    @IBOutlet weak var nextLabel: UILabel!
     @IBOutlet weak var successMsg: UILabel!
-    // function for displaying login
-  //  @IBOutlet weak var warningText: UILabel!
     @IBOutlet weak var submitButton: UIButton!
     @IBOutlet weak var feedbackText: UITextView!
     var accessToken:AccessToken?
@@ -126,6 +120,9 @@ class AfterLoginViewController: UIViewController,UITextViewDelegate {
 
     }
     
+    /// Called by Submit button.
+    ///
+    /// - Parameter sender: <#sender description#>
     @IBAction func submitFeedback(_ sender: Any) {
         
         ServerlessAPI.sharedInstance.sendFeedback(accessToken: accessToken!,idToken: idToken!, message: feedbackText.text)

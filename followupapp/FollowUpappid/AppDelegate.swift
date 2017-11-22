@@ -19,11 +19,13 @@ import BluemixAppID
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
-   
+    var pushAppGUID: String?
+    var pushClientSecret: String?
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
+        //Initialize BMSCore SDK.
         let myBMSClient = BMSClient.sharedInstance
-        myBMSClient.initialize(bluemixRegion:BMSClient.Region.sydney )
+        myBMSClient.initialize(bluemixRegion:BMSClient.Region.sydney ) // TODO: Change to the region of push notifications service.
         myBMSClient.requestTimeout = 10.0 // seconds
         
         // Initialize the AppID instance with your tenant ID and region
@@ -34,6 +36,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let bmsclient = BMSClient.sharedInstance
                 let backendGUID = dictionary["authTenantId"] as? String
                 let serverlessBackendURL = dictionary["serverlessBackendUrl"] as? String
+                pushAppGUID = dictionary["pushAppGuid"] as? String
+                pushClientSecret = dictionary["pushClientSecret"] as? String
                 bmsclient.initialize(bluemixRegion: region)
                 let appid = AppID.sharedInstance
                 appid.initialize(tenantId: backendGUID!, bluemixRegion: region)
@@ -42,6 +46,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             TokenStorageManager.sharedInstance.initialize(tenantId: backendGUID!)
             ServerlessAPI.sharedInstance.initialize(tenantId: backendGUID!,serverlessBackendURL: serverlessBackendURL!)
         }
+        
+        
+        //Request for user permission to send push notifications
         let notificationSettings = UIUserNotificationSettings(types: [.badge, .sound, .alert], categories: nil)
         UIApplication.shared.registerUserNotificationSettings(notificationSettings)
         UIApplication.shared.registerForRemoteNotifications()
@@ -50,6 +57,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, open url: URL, options :[UIApplicationOpenURLOptionsKey : Any]) -> Bool {
         return AppID.sharedInstance.application(application, open: url, options: options)
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let push =  BMSPushClient.sharedInstance
+        push.initializeWithAppGUID(appGUID: pushAppGUID!, clientSecret: pushClientSecret!)
+        push.registerWithDeviceToken(deviceToken: deviceToken) { (response, statusCode, error) -> Void in
+            if error.isEmpty {
+                print( "Response during device registration : \(String(describing: response))")
+                print( "status code during device registration : \(String(describing: statusCode))")
+            } else{
+                print( "Error during device registration \(error) ")
+                print( "Error during device registration \n  - status code: \(String(describing: statusCode)) \n Error :\(error) \n")
+            }
+        }
     }
     
     func applicationWillResignActive(_ application: UIApplication) {

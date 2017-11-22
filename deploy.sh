@@ -126,24 +126,20 @@ function uninstall() {
 function update() {
   echo "Updating actions..."
   bx wsk action update $PACKAGE_NAME/auth-validate \
-    actions/validate/build/libs/validate.jar \
-    --main serverlessfollowup.auth.ValidateToken
+    actions/validate/ValidateToken.swift \
 
-  bx wsk action update $PACKAGE_NAME/users-add \
-    actions/users/build/libs/users.jar \
-    --main serverlessfollowup.users.AddUser
+    bx wsk action update $PACKAGE_NAME/users-add \
+    actions/users/AddUser.swift \
 
-  bx wsk action update $PACKAGE_NAME/users-prepare-notify \
-    actions/users/build/libs/users.jar \
-    --main serverlessfollowup.users.PrepareUserNotification
+    bx wsk action update $PACKAGE_NAME/users-prepare-notify \
+    actions/users/PrepareUserNotification.swift \
 
-  bx wsk action update $PACKAGE_NAME/feedback-put \
-    actions/feedback/build/libs/feedback.jar \
-    --main serverlessfollowup.feedback.AddFeedback
+    bx wsk action update $PACKAGE_NAME/feedback-put \
+    actions/feedback/AddFeedback.swift \
 
-  bx wsk action update $PACKAGE_NAME/feedback-analyze \
-    actions/feedback/build/libs/feedback.jar \
-    --main serverlessfollowup.feedback.AnalyzeFeedback
+    bx wsk action update $PACKAGE_NAME/feedback-analyze \
+    actions/feedback/AnalyzeFeedback.swift \
+
 }
 
 function showenv() {

@@ -12,6 +12,7 @@ import BluemixAppID
 
 public class ServerlessAPI{
     
+
     var idToken:IdentityToken?
     var accessToken:AccessToken?
     var tenantId : String?
@@ -24,6 +25,12 @@ public class ServerlessAPI{
         self.serverlessBackendURL = serverlessBackendURL
     }
     
+    
+    /// Send a request to serverless action to a user after validating the accesstoken
+    ///
+    /// - Parameters:
+    ///   - accessToken: Provided by App ID
+    ///   - idToken: Provided by App ID
     func addUser(accessToken:AccessToken?, idToken:IdentityToken?)
     {
         self.accessToken = accessToken
@@ -62,6 +69,12 @@ public class ServerlessAPI{
         }
     }
     
+    /// Calls serverless action to add feedback to database.
+    ///
+    /// - Parameters:
+    ///   - accessToken: Provided by AppID service.
+    ///   - idToken: Provided by AppID service
+    ///   - message: As entered in Feedback Text View
     func sendFeedback(accessToken:AccessToken?, idToken:IdentityToken?, message: String?)
     {
         
