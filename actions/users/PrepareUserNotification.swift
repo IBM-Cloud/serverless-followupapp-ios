@@ -1,3 +1,6 @@
+/************
+ ** Preparing the text and deviceIDs for sending push notifications.
+ ************/
 
 import KituraNet
 import Dispatch

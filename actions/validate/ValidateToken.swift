@@ -1,3 +1,7 @@
+/***************
+ ** Validate an user access token through Introspect endpoint of
+ ** App ID Service on IBM Cloud.
+ ***************/
 import Foundation
 import Dispatch
 

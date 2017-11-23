@@ -1,5 +1,5 @@
 /**
- * Read and Write data to Cloudant
+ * Add feedback to Cloudant NoSQL DB on IBM Cloud.
  */
 
 import KituraNet

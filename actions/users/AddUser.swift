@@ -1,5 +1,5 @@
 /**
- * Read and Write data to Cloudant
+ * Add User to Cloudant NoSQL DB
  */
 
 import KituraNet

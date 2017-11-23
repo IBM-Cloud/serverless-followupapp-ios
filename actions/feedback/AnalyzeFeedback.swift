@@ -1,3 +1,7 @@
+/**********
+ * Analyze the provided feedback using IBM Watson Tone Analyzer
+ * Service on IBM Cloud.
+***********/
 import Foundation
 import Dispatch
 import KituraNet
