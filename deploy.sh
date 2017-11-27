@@ -56,24 +56,28 @@ function install() {
 
   echo "Creating actions..."
   bx wsk action create $PACKAGE_NAME/auth-validate \
-    actions/validate/ValidateToken.swift \
+    actions/validate/ValidateToken.zip \
+    --kind swift:3.1.1 \
     --annotation final true
 
   bx wsk action create $PACKAGE_NAME/users-add \
-    actions/users/AddUser.swift \
+    actions/users/AddUser.zip \
+    --kind swift:3.1.1 \
     --annotation final true
 
   bx wsk action create $PACKAGE_NAME/users-prepare-notify \
-    actions/users/PrepareUserNotification.swift \
+    actions/users/PrepareUserNotification.zip \
+    --kind swift:3.1.1 \
     --annotation final true
 
   bx wsk action create $PACKAGE_NAME/feedback-put \
-    actions/feedback/AddFeedback.swift \
-    --annotation final true
-
+    actions/feedback/AddFeedback.zip \
+   --kind swift:3.1.1 \
+   --annotation final true
   bx wsk action create $PACKAGE_NAME/feedback-analyze \
-    actions/feedback/AnalyzeFeedback.swift \
-    --annotation final true
+    actions/feedback/AnalyzeFeedback.zip \
+   --kind swift:3.1.1 \
+   --annotation final true
 
   echo "Creating sequences..."
   bx wsk action create $PACKAGE_NAME/users-add-sequence \
@@ -126,19 +130,19 @@ function uninstall() {
 function update() {
   echo "Updating actions..."
   bx wsk action update $PACKAGE_NAME/auth-validate \
-    actions/validate/ValidateToken.swift \
+    actions/validate/ValidateToken.zip \
 
     bx wsk action update $PACKAGE_NAME/users-add \
-    actions/users/AddUser.swift \
+    actions/users/AddUser.zip \
 
     bx wsk action update $PACKAGE_NAME/users-prepare-notify \
-    actions/users/PrepareUserNotification.swift \
+    actions/users/PrepareUserNotification.zip \
 
     bx wsk action update $PACKAGE_NAME/feedback-put \
-    actions/feedback/AddFeedback.swift \
+    actions/feedback/AddFeedback.zip \
 
     bx wsk action update $PACKAGE_NAME/feedback-analyze \
-    actions/feedback/AnalyzeFeedback.swift \
+    actions/feedback/AnalyzeFeedback.zip \
 
 }
 

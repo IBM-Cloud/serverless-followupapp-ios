@@ -122,7 +122,7 @@ class AfterLoginViewController: UIViewController,UITextViewDelegate {
     
     /// Called by Submit button.
     ///
-    /// - Parameter sender: <#sender description#>
+    /// - Parameter sender: Action to Save feedback.
     @IBAction func submitFeedback(_ sender: Any) {
         
         ServerlessAPI.sharedInstance.sendFeedback(accessToken: accessToken!,idToken: idToken!, message: feedbackText.text)

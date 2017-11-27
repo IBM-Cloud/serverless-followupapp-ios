@@ -42,26 +42,8 @@ public class ServerlessAPI{
             "Accept": "application/json"
         ]
     
-        var data = [String:String]()
-        data["subject"] = accessToken?.subject
-        data["deviceid"] = idToken?.oauthClient?.deviceId
-        
-        if !(accessToken?.isAnonymous)! {
-            data["name"] = idToken?.name ?? (idToken?.email?.components(separatedBy: "@"))?[0] ?? "Guest"
-            data["image"] = idToken?.picture
-            data["email"] = idToken?.email
-        }
-        else{
-            data["name"] = "Guest"
-        }
-        let jsonData = try? JSONSerialization.data(withJSONObject: data, options: [])
-        let jsonString = String(data: jsonData!, encoding: .utf8)
-        
         let args : Parameters = [
-            "cloudantId": accessToken?.subject! as Any,
-            "cloudantDbName": "users",
-            "tenantid": tenantId!,
-            "cloudantBody": jsonString!,
+            "tenantid": tenantId!
             ]
         
         Alamofire.request("\(serverlessBackendURL!)/users-add-sequence",method: .post, parameters: args, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
@@ -86,17 +68,9 @@ public class ServerlessAPI{
             "Accept": "application/json"
         ]
         
-        var data = [String:String]()
-        data["message"] = message
-        data["subject"] = accessToken?.subject!
-        let jsonData = try? JSONSerialization.data(withJSONObject: data, options: [])
-        let jsonString = String(data: jsonData!, encoding: .utf8)
-    
         let args : Parameters = [
-            "cloudantId": accessToken?.subject! as Any,
-            "cloudantDbName": "feedback",
             "tenantid": tenantId!,
-            "cloudantBody": jsonString!,
+            "message": message!,
             ]
         
         Alamofire.request("\(serverlessBackendURL!)/feedback-put-sequence",method: .post, parameters: args, encoding: JSONEncoding.default, headers: headers).responseJSON { response in

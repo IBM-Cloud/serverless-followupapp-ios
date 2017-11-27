@@ -23,7 +23,7 @@ func main(args: [String:Any]) -> [String:Any] {
         let message = args["message"] as? String
         else {
             
-            print("Error: missing a required parameter for writing a Cloudant document.")
+            print("Error: missing a required parameter.")
             return responseData
     }
     
