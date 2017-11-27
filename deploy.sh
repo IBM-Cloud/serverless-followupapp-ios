@@ -56,26 +56,26 @@ function install() {
 
   echo "Creating actions..."
   bx wsk action create $PACKAGE_NAME/auth-validate \
-    actions/validate/ValidateToken.zip \
+    actions/validate/ValidateToken.swift \
     --kind swift:3.1.1 \
     --annotation final true
 
   bx wsk action create $PACKAGE_NAME/users-add \
-    actions/users/AddUser.zip \
+    actions/users/AddUser.swift \
     --kind swift:3.1.1 \
     --annotation final true
 
   bx wsk action create $PACKAGE_NAME/users-prepare-notify \
-    actions/users/PrepareUserNotification.zip \
+    actions/users/PrepareUserNotification.swift \
     --kind swift:3.1.1 \
     --annotation final true
 
   bx wsk action create $PACKAGE_NAME/feedback-put \
-    actions/feedback/AddFeedback.zip \
+    actions/feedback/AddFeedback.swift \
    --kind swift:3.1.1 \
    --annotation final true
   bx wsk action create $PACKAGE_NAME/feedback-analyze \
-    actions/feedback/AnalyzeFeedback.zip \
+    actions/feedback/AnalyzeFeedback.swift \
    --kind swift:3.1.1 \
    --annotation final true
 
@@ -130,19 +130,19 @@ function uninstall() {
 function update() {
   echo "Updating actions..."
   bx wsk action update $PACKAGE_NAME/auth-validate \
-    actions/validate/ValidateToken.zip \
+    actions/validate/ValidateToken.swift \
 
     bx wsk action update $PACKAGE_NAME/users-add \
-    actions/users/AddUser.zip \
+    actions/users/AddUser.swift \
 
     bx wsk action update $PACKAGE_NAME/users-prepare-notify \
-    actions/users/PrepareUserNotification.zip \
+    actions/users/PrepareUserNotification.swift \
 
     bx wsk action update $PACKAGE_NAME/feedback-put \
-    actions/feedback/AddFeedback.zip \
+    actions/feedback/AddFeedback.swift \
 
     bx wsk action update $PACKAGE_NAME/feedback-analyze \
-    actions/feedback/AnalyzeFeedback.zip \
+    actions/feedback/AnalyzeFeedback.swift \
 
 }
 
