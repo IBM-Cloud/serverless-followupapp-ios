@@ -6,7 +6,7 @@ In this application, the user authenticates against [App ID](https://console.blu
 
 For **step-by-step instructions**, refer this tutorial - [Mobile application with a serverless backend](https://console.bluemix.net/docs/tutorials/serverless-mobile-backend.html#mobile-application-with-a-serverless-backend)
 
-![](https://github.com/IBM-Bluemix-Docs/tutorials/blob/master/images/solution11/ArchitectureDiagram.png?raw=true)
+![](https://github.com/IBM-Bluemix-Docs/tutorials/blob/master/images/solution11/Architecture.png?raw=true)
 
 ## License
 
