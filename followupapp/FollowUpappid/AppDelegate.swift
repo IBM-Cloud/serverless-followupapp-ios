@@ -49,9 +49,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         //Request for user permission to send push notifications
-        let notificationSettings = UIUserNotificationSettings(types: [.badge, .sound, .alert], categories: nil)
-        UIApplication.shared.registerUserNotificationSettings(notificationSettings)
-        UIApplication.shared.registerForRemoteNotifications()
+        let push =  BMSPushClient.sharedInstance
+        push.initializeWithAppGUID(appGUID: pushAppGUID!, clientSecret: pushClientSecret!)
         return true
     }    
     
@@ -61,7 +60,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let push =  BMSPushClient.sharedInstance
-        push.initializeWithAppGUID(appGUID: pushAppGUID!, clientSecret: pushClientSecret!)
         push.registerWithDeviceToken(deviceToken: deviceToken) { (response, statusCode, error) -> Void in
             if error.isEmpty {
                 print( "Response during device registration : \(String(describing: response))")
@@ -93,6 +91,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    }
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        
+        let payLoad = ((((userInfo as NSDictionary).value(forKey: "aps") as! NSDictionary).value(forKey: "alert") as! NSDictionary).value(forKey: "body") as! String)
+        
+        self.showAlert(title: "Alert", message: payLoad)
+        
+    }
+    
+    func showAlert (title:String , message:String){
+        
+        // create the alert
+        let alert = UIAlertController.init(title: title as String, message: message as String, preferredStyle: UIAlertControllerStyle.alert)
+        
+        // add an action (button)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+        
+        // show the alert
+        self.window!.rootViewController!.present(alert, animated: true, completion: nil)
     }
 
 }
