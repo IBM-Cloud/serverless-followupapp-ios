@@ -70,7 +70,7 @@ func main(args: [String:Any]) -> [String:Any] {
         }
     }
     responseData = [
-        "deviceIds": deviceIds,
+        "deviceIds": [deviceIds],
         "text": notificationText
     ]
     

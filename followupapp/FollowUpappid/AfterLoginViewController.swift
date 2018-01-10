@@ -126,7 +126,7 @@ class AfterLoginViewController: UIViewController,UITextViewDelegate {
     @IBAction func submitFeedback(_ sender: Any) {
         
         ServerlessAPI.sharedInstance.sendFeedback(accessToken: accessToken!,idToken: idToken!, message: feedbackText.text)
-        let alert = UIAlertController(title: "Submitted", message: "Thanks for your feedback", preferredStyle: UIAlertControllerStyle.alert)
+        let alert = UIAlertController(title: "Submitted", message: "Your feedback has been successfully submitted.", preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { action in
             self.feedbackText.text = ""
             self.textViewDidChange(self.feedbackText)
@@ -140,11 +140,8 @@ class AfterLoginViewController: UIViewController,UITextViewDelegate {
         }
     }
     
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        if (text == "\n") {
-            textView.resignFirstResponder()
-        }
-        return true
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
     }
     
     func didBecomeActive(_ notification: Notification) {
