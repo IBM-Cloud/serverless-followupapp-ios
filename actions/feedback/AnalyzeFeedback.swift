@@ -116,7 +116,12 @@ func main(args: [String:Any]) -> [String:Any]  {
                         {
                             let output = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:String]
                             print(output)
-                            messageTemplate = output!["template"] as! String
+                            if let cloudantresponse = output!["template"] as String! {
+                                messageTemplate = cloudantresponse
+                            }
+                            else{
+                                messageTemplate = "Thank you for your feedback."
+                            }
                         }
                     }
                     else{
