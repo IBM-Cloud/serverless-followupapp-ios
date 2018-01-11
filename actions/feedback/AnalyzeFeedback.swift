@@ -126,6 +126,7 @@ func main(args: [String:Any]) -> [String:Any]  {
                     }
                     else{
                         print("ERROR: No Tone detected.")
+                        messageTemplate = "Thank you for your feedback."
                     }
                     
                 }
