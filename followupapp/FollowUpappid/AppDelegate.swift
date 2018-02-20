@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //Initialize BMSCore SDK.
         let myBMSClient = BMSClient.sharedInstance
-        myBMSClient.initialize(bluemixRegion:BMSClient.Region.sydney ) // TODO: Change to the region of push notifications service.
+        myBMSClient.initialize(bluemixRegion:BMSClient.Region.usSouth) // TODO: Change to the region of push notifications service.
         myBMSClient.requestTimeout = 10.0 // seconds
         
         // Initialize the AppID instance with your tenant ID and region
