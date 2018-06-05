@@ -34,7 +34,7 @@ function install() {
   curl -s -X POST -H 'Content-Type: application/json' -d @actions/feedback/moods.json $CLOUDANT_URL/moods/_bulk_docs | grep -v conflict
 
   echo "Creating packages..."
-  bx wsk package create $PACKAGE_NAME\
+  ibmcloud wsk package create $PACKAGE_NAME\
     -p services.cloudant.url $CLOUDANT_URL\
     -p services.appid.url $APPID_URL\
     -p services.appid.clientId $APPID_CLIENTID\
@@ -43,105 +43,105 @@ function install() {
     -p services.ta.username $TONE_ANALYZER_USERNAME\
     -p services.ta.password $TONE_ANALYZER_PASSWORD\
 
-  bx wsk package bind /whisk.system/cloudant \
+  ibmcloud wsk package bind /whisk.system/cloudant \
     $PACKAGE_NAME-cloudant \
     -p username $CLOUDANT_USERNAME \
     -p password $CLOUDANT_PASSWORD \
     -p host $CLOUDANT_HOST
 
-  bx wsk package bind /whisk.system/pushnotifications \
+  ibmcloud wsk package bind /whisk.system/pushnotifications \
     $PACKAGE_NAME-push \
     -p appId $PUSH_APP_GUID \
     -p appSecret $PUSH_APP_SECRET
 
   echo "Creating actions..."
-  bx wsk action create $PACKAGE_NAME/auth-validate \
+  ibmcloud wsk action create $PACKAGE_NAME/auth-validate \
     actions/validate/ValidateToken.swift \
     --kind swift:3.1.1 \
     --annotation final true
 
-  bx wsk action create $PACKAGE_NAME/users-add \
+  ibmcloud wsk action create $PACKAGE_NAME/users-add \
     actions/users/AddUser.swift \
     --kind swift:3.1.1 \
     --annotation final true
 
-  bx wsk action create $PACKAGE_NAME/users-prepare-notify \
+  ibmcloud wsk action create $PACKAGE_NAME/users-prepare-notify \
     actions/users/PrepareUserNotification.swift \
     --kind swift:3.1.1 \
     --annotation final true
 
-  bx wsk action create $PACKAGE_NAME/feedback-put \
+  ibmcloud wsk action create $PACKAGE_NAME/feedback-put \
     actions/feedback/AddFeedback.swift \
    --kind swift:3.1.1 \
    --annotation final true
-  bx wsk action create $PACKAGE_NAME/feedback-analyze \
+  ibmcloud wsk action create $PACKAGE_NAME/feedback-analyze \
     actions/feedback/AnalyzeFeedback.swift \
    --kind swift:3.1.1 \
    --annotation final true
 
   echo "Creating sequences..."
-  bx wsk action create $PACKAGE_NAME/users-add-sequence \
+  ibmcloud wsk action create $PACKAGE_NAME/users-add-sequence \
     $PACKAGE_NAME/auth-validate,$PACKAGE_NAME/users-add \
     --sequence \
     --web true
 
-  bx wsk action create $PACKAGE_NAME/feedback-put-sequence \
+  ibmcloud wsk action create $PACKAGE_NAME/feedback-put-sequence \
     $PACKAGE_NAME/auth-validate,$PACKAGE_NAME/feedback-put \
     --sequence \
     --web true
 
   # sequence reading the document from cloudant changes then calling analyze feedback on it
-  bx wsk action create $PACKAGE_NAME/feedback-analyze-sequence \
+  ibmcloud wsk action create $PACKAGE_NAME/feedback-analyze-sequence \
     $PACKAGE_NAME-cloudant/read-document,$PACKAGE_NAME/feedback-analyze,$PACKAGE_NAME/users-prepare-notify,$PACKAGE_NAME-push/sendMessage \
     --sequence
 
   echo "Creating triggers..."
-  bx wsk trigger create feedback-analyze-trigger --feed $PACKAGE_NAME-cloudant/changes \
+  ibmcloud wsk trigger create feedback-analyze-trigger --feed $PACKAGE_NAME-cloudant/changes \
     -p dbname feedback
-  bx wsk rule create feedback-analyze-rule feedback-analyze-trigger $PACKAGE_NAME/feedback-analyze-sequence
+  ibmcloud wsk rule create feedback-analyze-rule feedback-analyze-trigger $PACKAGE_NAME/feedback-analyze-sequence
 }
 
 function uninstall() {
   echo "Removing triggers..."
-  bx wsk rule delete feedback-analyze-rule
-  bx wsk trigger delete feedback-analyze-trigger
+  ibmcloud wsk rule delete feedback-analyze-rule
+  ibmcloud wsk trigger delete feedback-analyze-trigger
 
   echo "Removing sequence..."
-  bx wsk action delete $PACKAGE_NAME/users-add-sequence
-  bx wsk action delete $PACKAGE_NAME/feedback-put-sequence
-  bx wsk action delete $PACKAGE_NAME/feedback-analyze-sequence
+  ibmcloud wsk action delete $PACKAGE_NAME/users-add-sequence
+  ibmcloud wsk action delete $PACKAGE_NAME/feedback-put-sequence
+  ibmcloud wsk action delete $PACKAGE_NAME/feedback-analyze-sequence
 
   echo "Removing actions..."
-  bx wsk action delete $PACKAGE_NAME/auth-validate
-  bx wsk action delete $PACKAGE_NAME/users-add
-  bx wsk action delete $PACKAGE_NAME/users-prepare-notify
-  bx wsk action delete $PACKAGE_NAME/feedback-put
-  bx wsk action delete $PACKAGE_NAME/feedback-analyze
+  ibmcloud wsk action delete $PACKAGE_NAME/auth-validate
+  ibmcloud wsk action delete $PACKAGE_NAME/users-add
+  ibmcloud wsk action delete $PACKAGE_NAME/users-prepare-notify
+  ibmcloud wsk action delete $PACKAGE_NAME/feedback-put
+  ibmcloud wsk action delete $PACKAGE_NAME/feedback-analyze
 
   echo "Removing packages..."
-  bx wsk package delete $PACKAGE_NAME-cloudant
-  bx wsk package delete $PACKAGE_NAME-push
-  bx wsk package delete $PACKAGE_NAME
+  ibmcloud wsk package delete $PACKAGE_NAME-cloudant
+  ibmcloud wsk package delete $PACKAGE_NAME-push
+  ibmcloud wsk package delete $PACKAGE_NAME
 
   echo "Done"
-  bx wsk list
+  ibmcloud wsk list
 }
 
 function update() {
   echo "Updating actions..."
-  bx wsk action update $PACKAGE_NAME/auth-validate \
+  ibmcloud wsk action update $PACKAGE_NAME/auth-validate \
     actions/validate/ValidateToken.swift \
 
-    bx wsk action update $PACKAGE_NAME/users-add \
+    ibmcloud wsk action update $PACKAGE_NAME/users-add \
     actions/users/AddUser.swift \
 
-    bx wsk action update $PACKAGE_NAME/users-prepare-notify \
+    ibmcloud wsk action update $PACKAGE_NAME/users-prepare-notify \
     actions/users/PrepareUserNotification.swift \
 
-    bx wsk action update $PACKAGE_NAME/feedback-put \
+    ibmcloud wsk action update $PACKAGE_NAME/feedback-put \
     actions/feedback/AddFeedback.swift \
 
-    bx wsk action update $PACKAGE_NAME/feedback-analyze \
+    ibmcloud wsk action update $PACKAGE_NAME/feedback-analyze \
     actions/feedback/AnalyzeFeedback.swift \
 
 }
