@@ -53,6 +53,7 @@ function install() {
     $PACKAGE_NAME-push \
     -p appId $PUSH_APP_GUID \
     -p appSecret $PUSH_APP_SECRET
+    -p apiHost $PUSH_APP_API_HOST
 
   echo "Creating actions..."
   ibmcloud wsk action create $PACKAGE_NAME/auth-validate \
