@@ -52,7 +52,7 @@ function install() {
   ibmcloud wsk package bind /whisk.system/pushnotifications \
     $PACKAGE_NAME-push \
     -p appId $PUSH_APP_GUID \
-    -p appSecret $PUSH_APP_SECRET
+    -p appSecret $PUSH_APP_SECRET \
     -p apiHost $PUSH_APP_API_HOST
 
   echo "Creating actions..."
