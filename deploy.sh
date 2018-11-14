@@ -34,7 +34,7 @@ function install() {
   curl -s -X POST -H 'Content-Type: application/json' -d @actions/feedback/moods.json $CLOUDANT_URL/moods/_bulk_docs | grep -v conflict
 
   echo "Creating packages..."
-  ibmcloud wsk package create $PACKAGE_NAME\
+  ibmcloud fn package create $PACKAGE_NAME\
     -p services.cloudant.url $CLOUDANT_URL\
     -p services.appid.url $APPID_URL\
     -p services.appid.clientId $APPID_CLIENTID\
@@ -43,106 +43,106 @@ function install() {
     -p services.ta.username $TONE_ANALYZER_USERNAME\
     -p services.ta.password $TONE_ANALYZER_PASSWORD\
 
-  ibmcloud wsk package bind /whisk.system/cloudant \
+  ibmcloud fn package bind /whisk.system/cloudant \
     $PACKAGE_NAME-cloudant \
     -p username $CLOUDANT_USERNAME \
     -p password $CLOUDANT_PASSWORD \
     -p host $CLOUDANT_HOST
 
-  ibmcloud wsk package bind /whisk.system/pushnotifications \
+  ibmcloud fn package bind /whisk.system/pushnotifications \
     $PACKAGE_NAME-push \
     -p appId $PUSH_APP_GUID \
     -p appSecret $PUSH_APP_SECRET \
     -p apiHost $PUSH_APP_API_HOST
 
   echo "Creating actions..."
-  ibmcloud wsk action create $PACKAGE_NAME/auth-validate \
+  ibmcloud fn action create $PACKAGE_NAME/auth-validate \
     actions/validate/ValidateToken.swift \
     --kind swift:3.1.1 \
     --annotation final true
 
-  ibmcloud wsk action create $PACKAGE_NAME/users-add \
+  ibmcloud fn action create $PACKAGE_NAME/users-add \
     actions/users/AddUser.swift \
     --kind swift:3.1.1 \
     --annotation final true
 
-  ibmcloud wsk action create $PACKAGE_NAME/users-prepare-notify \
+  ibmcloud fn action create $PACKAGE_NAME/users-prepare-notify \
     actions/users/PrepareUserNotification.swift \
     --kind swift:3.1.1 \
     --annotation final true
 
-  ibmcloud wsk action create $PACKAGE_NAME/feedback-put \
+  ibmcloud fn action create $PACKAGE_NAME/feedback-put \
     actions/feedback/AddFeedback.swift \
    --kind swift:3.1.1 \
    --annotation final true
-  ibmcloud wsk action create $PACKAGE_NAME/feedback-analyze \
+  ibmcloud fn action create $PACKAGE_NAME/feedback-analyze \
     actions/feedback/AnalyzeFeedback.swift \
    --kind swift:3.1.1 \
    --annotation final true
 
   echo "Creating sequences..."
-  ibmcloud wsk action create $PACKAGE_NAME/users-add-sequence \
+  ibmcloud fn action create $PACKAGE_NAME/users-add-sequence \
     $PACKAGE_NAME/auth-validate,$PACKAGE_NAME/users-add \
     --sequence \
     --web true
 
-  ibmcloud wsk action create $PACKAGE_NAME/feedback-put-sequence \
+  ibmcloud fn action create $PACKAGE_NAME/feedback-put-sequence \
     $PACKAGE_NAME/auth-validate,$PACKAGE_NAME/feedback-put \
     --sequence \
     --web true
 
   # sequence reading the document from cloudant changes then calling analyze feedback on it
-  ibmcloud wsk action create $PACKAGE_NAME/feedback-analyze-sequence \
+  ibmcloud fn action create $PACKAGE_NAME/feedback-analyze-sequence \
     $PACKAGE_NAME-cloudant/read-document,$PACKAGE_NAME/feedback-analyze,$PACKAGE_NAME/users-prepare-notify,$PACKAGE_NAME-push/sendMessage \
     --sequence
 
   echo "Creating triggers..."
-  ibmcloud wsk trigger create feedback-analyze-trigger --feed $PACKAGE_NAME-cloudant/changes \
+  ibmcloud fn trigger create feedback-analyze-trigger --feed $PACKAGE_NAME-cloudant/changes \
     -p dbname feedback
-  ibmcloud wsk rule create feedback-analyze-rule feedback-analyze-trigger $PACKAGE_NAME/feedback-analyze-sequence
+  ibmcloud fn rule create feedback-analyze-rule feedback-analyze-trigger $PACKAGE_NAME/feedback-analyze-sequence
 }
 
 function uninstall() {
   echo "Removing triggers..."
-  ibmcloud wsk rule delete feedback-analyze-rule
-  ibmcloud wsk trigger delete feedback-analyze-trigger
+  ibmcloud fn rule delete feedback-analyze-rule
+  ibmcloud fn trigger delete feedback-analyze-trigger
 
   echo "Removing sequence..."
-  ibmcloud wsk action delete $PACKAGE_NAME/users-add-sequence
-  ibmcloud wsk action delete $PACKAGE_NAME/feedback-put-sequence
-  ibmcloud wsk action delete $PACKAGE_NAME/feedback-analyze-sequence
+  ibmcloud fn action delete $PACKAGE_NAME/users-add-sequence
+  ibmcloud fn action delete $PACKAGE_NAME/feedback-put-sequence
+  ibmcloud fn action delete $PACKAGE_NAME/feedback-analyze-sequence
 
   echo "Removing actions..."
-  ibmcloud wsk action delete $PACKAGE_NAME/auth-validate
-  ibmcloud wsk action delete $PACKAGE_NAME/users-add
-  ibmcloud wsk action delete $PACKAGE_NAME/users-prepare-notify
-  ibmcloud wsk action delete $PACKAGE_NAME/feedback-put
-  ibmcloud wsk action delete $PACKAGE_NAME/feedback-analyze
+  ibmcloud fn action delete $PACKAGE_NAME/auth-validate
+  ibmcloud fn action delete $PACKAGE_NAME/users-add
+  ibmcloud fn action delete $PACKAGE_NAME/users-prepare-notify
+  ibmcloud fn action delete $PACKAGE_NAME/feedback-put
+  ibmcloud fn action delete $PACKAGE_NAME/feedback-analyze
 
   echo "Removing packages..."
-  ibmcloud wsk package delete $PACKAGE_NAME-cloudant
-  ibmcloud wsk package delete $PACKAGE_NAME-push
-  ibmcloud wsk package delete $PACKAGE_NAME
+  ibmcloud fn package delete $PACKAGE_NAME-cloudant
+  ibmcloud fn package delete $PACKAGE_NAME-push
+  ibmcloud fn package delete $PACKAGE_NAME
 
   echo "Done"
-  ibmcloud wsk list
+  ibmcloud fn list
 }
 
 function update() {
   echo "Updating actions..."
-  ibmcloud wsk action update $PACKAGE_NAME/auth-validate \
+  ibmcloud fn action update $PACKAGE_NAME/auth-validate \
     actions/validate/ValidateToken.swift \
 
-    ibmcloud wsk action update $PACKAGE_NAME/users-add \
+    ibmcloud fn action update $PACKAGE_NAME/users-add \
     actions/users/AddUser.swift \
 
-    ibmcloud wsk action update $PACKAGE_NAME/users-prepare-notify \
+    ibmcloud fn action update $PACKAGE_NAME/users-prepare-notify \
     actions/users/PrepareUserNotification.swift \
 
-    ibmcloud wsk action update $PACKAGE_NAME/feedback-put \
+    ibmcloud fn action update $PACKAGE_NAME/feedback-put \
     actions/feedback/AddFeedback.swift \
 
-    ibmcloud wsk action update $PACKAGE_NAME/feedback-analyze \
+    ibmcloud fn action update $PACKAGE_NAME/feedback-analyze \
     actions/feedback/AnalyzeFeedback.swift \
 
 }
