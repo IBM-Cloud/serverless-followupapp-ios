@@ -8,7 +8,7 @@ import Foundation
 
 func main(args: [String:Any]) -> [String:Any] {
     print("Received:",args)
-    
+
     var str = ""
     var responseValue = ""
     var name = ""
@@ -71,8 +71,8 @@ func main(args: [String:Any]) -> [String:Any] {
         }
     }
     responseData = [
-        "deviceIds": [deviceIds],
-        "text": notificationText
+        "targetDeviceIds": [deviceIds],
+        "messageText": notificationText
     ]
     
     return responseData
