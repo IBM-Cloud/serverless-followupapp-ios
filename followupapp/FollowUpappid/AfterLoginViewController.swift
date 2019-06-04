@@ -13,6 +13,7 @@
 import UIKit
 import IBMCloudAppID
 import BMSCore
+import BMSPush
 import Alamofire
 
 class AfterLoginViewController: UIViewController,UITextViewDelegate {
@@ -61,7 +62,7 @@ class AfterLoginViewController: UIViewController,UITextViewDelegate {
         
         let displayName = idToken?.name ?? (idToken?.email?.components(separatedBy: "@"))?[0] ?? "Guest"
         self.successMsg.text = "Welcome " + displayName + ""
-        ServerlessAPI.sharedInstance.addUser(accessToken: accessToken!,idToken: idToken!)
+        ServerlessAPI.sharedInstance.addUser(accessToken: accessToken!,idToken: idToken!, deviceId: BMSClient.sharedInstance.authorizationManager.deviceIdentity.ID!)
     }
     
     class LoginDelegate : AuthorizationDelegate {
