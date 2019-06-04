@@ -8,7 +8,8 @@ import Foundation
 import SwiftyJSON
 
 func main(args: [String:Any]) -> [String:Any] {
-    
+    print("Received:",args)
+
     var str = ""
     var subject = ""
     var cloudantBody = [String:String]()

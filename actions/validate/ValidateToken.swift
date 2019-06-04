@@ -8,7 +8,8 @@ import SwiftyJSON
 
 
 func main(args: [String:Any]) -> [String:Any]  {
-    
+    print("Received:",args)
+
     var args: [String:Any] = args
     let str = ""
     var result: [String:Any] = [

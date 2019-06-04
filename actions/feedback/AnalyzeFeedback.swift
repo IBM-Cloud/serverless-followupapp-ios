@@ -7,7 +7,8 @@ import Dispatch
 import KituraNet
 
 func main(args: [String:Any]) -> [String:Any]  {
-    
+    print("Received:",args)
+
     let str = ""
     var responseValue = ""
     var messageTemplate = ""

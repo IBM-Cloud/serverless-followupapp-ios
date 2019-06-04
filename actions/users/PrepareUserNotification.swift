@@ -7,6 +7,7 @@ import Dispatch
 import Foundation
 
 func main(args: [String:Any]) -> [String:Any] {
+    print("Received:",args)
     
     var str = ""
     var responseValue = ""
