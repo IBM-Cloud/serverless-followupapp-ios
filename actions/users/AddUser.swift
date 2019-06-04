@@ -8,11 +8,12 @@ import Foundation
 import SwiftyJSON
 
 func main(args: [String:Any]) -> [String:Any] {
+    print("Received:",args)
     
     var str = ""
     var subject = ""
     var name = "Guest"
-    var deviceId = ""
+    var deviceId = args["deviceId"] as? String
     var picture = ""
     var email = ""
     var cloudantBody = [String:String]()
@@ -44,7 +45,6 @@ func main(args: [String:Any]) -> [String:Any] {
     if let idTokenFromString = idToken.data(using: .utf8, allowLossyConversion: false) {
         let idTokenJSON = JSON(data: idTokenFromString)
         name = idTokenJSON["name"].stringValue.isEmpty ? "Guest" : idTokenJSON["name"].stringValue
-        deviceId = idTokenJSON["oauth_client"]["device_id"].stringValue
         cloudantBody["name"] = name
         cloudantBody["deviceid"] = deviceId
         if(idTokenJSON["amr"][0].stringValue != "appid_anon")

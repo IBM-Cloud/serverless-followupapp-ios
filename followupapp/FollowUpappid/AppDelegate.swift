@@ -13,11 +13,15 @@
 import UIKit
 import BMSCore
 import BMSPush
-import BluemixAppID
+import IBMCloudAppID
 @UIApplicationMain
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    
+  
+    // TODO: Change to the region where the services have been provisioned
+    let APP_ID_REGION = AppID.REGION_US_SOUTH
+    let PUSH_NOTIFICATIONS_REGION = BMSClient.Region.usSouth
+  
     var window: UIWindow?
     var pushAppGUID: String?
     var pushClientSecret: String?
@@ -25,28 +29,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //Initialize BMSCore SDK.
         let myBMSClient = BMSClient.sharedInstance
-        myBMSClient.initialize(bluemixRegion:BMSClient.Region.usSouth) // TODO: Change to the region of push notifications service.
+        myBMSClient.initialize(bluemixRegion:PUSH_NOTIFICATIONS_REGION)
         myBMSClient.requestTimeout = 10.0 // seconds
         
         // Initialize the AppID instance with your tenant ID and region
         // App Id initialization
         // NOTE: Enable Keychain Sharing capability in Xcode
         if let contents = Bundle.main.path(forResource:"BMSCredentials", ofType: "plist"), let dictionary = NSDictionary(contentsOfFile: contents) {
-            let region = AppID.REGION_US_SOUTH
+            let region = APP_ID_REGION
             let bmsclient = BMSClient.sharedInstance
-                let backendGUID = dictionary["authTenantId"] as? String
-                let serverlessBackendURL = dictionary["serverlessBackendUrl"] as? String
-                pushAppGUID = dictionary["pushAppGuid"] as? String
-                pushClientSecret = dictionary["pushClientSecret"] as? String
-                bmsclient.initialize(bluemixRegion: region)
-                let appid = AppID.sharedInstance
-                appid.initialize(tenantId: backendGUID!, bluemixRegion: region)
-                let appIdAuthorizationManager = AppIDAuthorizationManager(appid:appid)
-                bmsclient.authorizationManager = appIdAuthorizationManager
+            let backendGUID = dictionary["authTenantId"] as? String
+            let serverlessBackendURL = dictionary["serverlessBackendUrl"] as? String
+            pushAppGUID = dictionary["pushAppGuid"] as? String
+            pushClientSecret = dictionary["pushClientSecret"] as? String
+            let appid = AppID.sharedInstance
+            appid.initialize(tenantId: backendGUID!, region: region)
+            let appIdAuthorizationManager = AppIDAuthorizationManager(appid:appid)
+            bmsclient.authorizationManager = appIdAuthorizationManager
             TokenStorageManager.sharedInstance.initialize(tenantId: backendGUID!)
             ServerlessAPI.sharedInstance.initialize(tenantId: backendGUID!,serverlessBackendURL: serverlessBackendURL!)
-        }
-        
+        }        
         
         //Request for user permission to send push notifications
         let push =  BMSPushClient.sharedInstance
@@ -57,20 +59,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, open url: URL, options :[UIApplicationOpenURLOptionsKey : Any]) -> Bool {
         return AppID.sharedInstance.application(application, open: url, options: options)
     }
-    
+  
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let push =  BMSPushClient.sharedInstance
         push.registerWithDeviceToken(deviceToken: deviceToken) { (response, statusCode, error) -> Void in
             if error.isEmpty {
-                print( "Response during device registration : \(String(describing: response))")
-                print( "status code during device registration : \(String(describing: statusCode))")
+              print( "Response during device registration : \(String(describing: response))")
+              print( "status code during device registration : \(String(describing: statusCode))")
             } else{
                 print( "Error during device registration \(error) ")
                 print( "Error during device registration \n  - status code: \(String(describing: statusCode)) \n Error :\(error) \n")
             }
         }
     }
-    
+  
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.

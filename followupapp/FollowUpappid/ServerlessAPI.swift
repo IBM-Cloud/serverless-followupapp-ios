@@ -8,7 +8,7 @@
 
 import Foundation
 import Alamofire
-import BluemixAppID
+import IBMCloudAppID
 
 public class ServerlessAPI{
     
@@ -31,7 +31,8 @@ public class ServerlessAPI{
     /// - Parameters:
     ///   - accessToken: Provided by App ID
     ///   - idToken: Provided by App ID
-    func addUser(accessToken:AccessToken?, idToken:IdentityToken?)
+    ///   - deviceId: the device ID used for push notifications
+  func addUser(accessToken:AccessToken?, idToken:IdentityToken?, deviceId: String)
     {
         self.accessToken = accessToken
         self.idToken = idToken
@@ -43,7 +44,8 @@ public class ServerlessAPI{
         ]
     
         let args : Parameters = [
-            "tenantid": tenantId!
+            "tenantid": tenantId!,
+            "deviceId": deviceId,
             ]
         
         Alamofire.request("\(serverlessBackendURL!)/users-add-sequence",method: .post, parameters: args, encoding: JSONEncoding.default, headers: headers).responseJSON { response in

@@ -33,6 +33,10 @@ function install() {
   # # ignore "document already exists error"
   curl -s -X POST -H 'Content-Type: application/json' -d @actions/feedback/moods.json $CLOUDANT_URL/moods/_bulk_docs | grep -v conflict
 
+  echo "Creating IAM-compatible push notifications package..."
+  git clone https://github.com/ibm-functions/package-push-notifications.git
+  (cd package-push-notifications/runtimes/nodejs && ibmcloud fn deploy -m manifest.yaml)
+
   echo "Creating packages..."
   ibmcloud fn package create $PACKAGE_NAME\
     -p services.cloudant.url $CLOUDANT_URL\
@@ -40,8 +44,8 @@ function install() {
     -p services.appid.clientId $APPID_CLIENTID\
     -p services.appid.secret $APPID_SECRET\
     -p services.ta.url $TONE_ANALYZER_URL\
-    -p services.ta.username $TONE_ANALYZER_USERNAME\
-    -p services.ta.password $TONE_ANALYZER_PASSWORD\
+    -p services.ta.username apikey\
+    -p services.ta.password $TONE_ANALYZER_APIKEY
 
   ibmcloud fn package bind /whisk.system/cloudant \
     $PACKAGE_NAME-cloudant \
@@ -49,10 +53,10 @@ function install() {
     -p password $CLOUDANT_PASSWORD \
     -p host $CLOUDANT_HOST
 
-  ibmcloud fn package bind /whisk.system/pushnotifications \
+  ibmcloud fn package bind push-notifications \
     $PACKAGE_NAME-push \
-    -p appId $PUSH_APP_GUID \
-    -p appSecret $PUSH_APP_SECRET \
+    -p appGuid $PUSH_APP_GUID \
+    -p apikey $PUSH_APP_APIKEY \
     -p apiHost $PUSH_APP_API_HOST
 
   echo "Creating actions..."
@@ -93,7 +97,7 @@ function install() {
 
   # sequence reading the document from cloudant changes then calling analyze feedback on it
   ibmcloud fn action create $PACKAGE_NAME/feedback-analyze-sequence \
-    $PACKAGE_NAME-cloudant/read-document,$PACKAGE_NAME/feedback-analyze,$PACKAGE_NAME/users-prepare-notify,$PACKAGE_NAME-push/sendMessage \
+    $PACKAGE_NAME-cloudant/read-document,$PACKAGE_NAME/feedback-analyze,$PACKAGE_NAME/users-prepare-notify,$PACKAGE_NAME-push/send-message \
     --sequence
 
   echo "Creating triggers..."
@@ -123,6 +127,7 @@ function uninstall() {
   ibmcloud fn package delete $PACKAGE_NAME-cloudant
   ibmcloud fn package delete $PACKAGE_NAME-push
   ibmcloud fn package delete $PACKAGE_NAME
+  (cd package-push-notifications/runtimes/nodejs && ibmcloud fn deploy -m manifest.yaml)
 
   echo "Done"
   ibmcloud fn list
@@ -131,20 +136,19 @@ function uninstall() {
 function update() {
   echo "Updating actions..."
   ibmcloud fn action update $PACKAGE_NAME/auth-validate \
-    actions/validate/ValidateToken.swift \
+    actions/validate/ValidateToken.swift
 
-    ibmcloud fn action update $PACKAGE_NAME/users-add \
-    actions/users/AddUser.swift \
+  ibmcloud fn action update $PACKAGE_NAME/users-add \
+    actions/users/AddUser.swift
 
-    ibmcloud fn action update $PACKAGE_NAME/users-prepare-notify \
-    actions/users/PrepareUserNotification.swift \
+  ibmcloud fn action update $PACKAGE_NAME/users-prepare-notify \
+    actions/users/PrepareUserNotification.swift
 
-    ibmcloud fn action update $PACKAGE_NAME/feedback-put \
-    actions/feedback/AddFeedback.swift \
+  ibmcloud fn action update $PACKAGE_NAME/feedback-put \
+    actions/feedback/AddFeedback.swift
 
-    ibmcloud fn action update $PACKAGE_NAME/feedback-analyze \
-    actions/feedback/AnalyzeFeedback.swift \
-
+  ibmcloud fn action update $PACKAGE_NAME/feedback-analyze \
+    actions/feedback/AnalyzeFeedback.swift
 }
 
 function showenv() {

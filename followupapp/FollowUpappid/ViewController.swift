@@ -11,7 +11,7 @@
  */
 
 import UIKit
-import BluemixAppID
+import IBMCloudAppID
 import BMSCore
 
 class ViewController: UIViewController {
@@ -27,7 +27,8 @@ class ViewController: UIViewController {
     }
     
     class delegate : AuthorizationDelegate {
-        public func onAuthorizationSuccess(accessToken: AccessToken, identityToken: IdentityToken, response:Response?) {
+        public func onAuthorizationSuccess(accessToken: AccessToken?, identityToken: IdentityToken?, refreshToken: RefreshToken?, response: Response?) {
+          if let accessToken = accessToken {
             let mainView  = UIApplication.shared.keyWindow?.rootViewController
             let afterLoginView  = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "AfterLoginView") as? AfterLoginViewController
             afterLoginView?.accessToken = accessToken
@@ -43,6 +44,7 @@ class ViewController: UIViewController {
             DispatchQueue.main.async {
                 mainView?.present(afterLoginView!, animated: true, completion: nil)
             }
+          }
         }
         
         public func onAuthorizationCanceled() {
@@ -55,14 +57,11 @@ class ViewController: UIViewController {
     }
     
     @IBAction func log_in_anonymously(_ sender: Any) {
-        let token = TokenStorageManager.sharedInstance.loadStoredToken()
-        
-        AppID.sharedInstance.loginAnonymously(accessTokenString: token, authorizationDelegate: delegate())
+        AppID.sharedInstance.signinAnonymously(authorizationDelegate: delegate())
     }
     
     @IBAction func log_in(_ sender: AnyObject) {
-        let token = TokenStorageManager.sharedInstance.loadStoredToken()
-        AppID.sharedInstance.loginWidget?.launch(accessTokenString: token, delegate: delegate())
+      AppID.sharedInstance.loginWidget?.launch(delegate: delegate())
     }
 }
 

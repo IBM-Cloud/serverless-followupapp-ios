@@ -1,0 +1,6 @@
+framework module IBMCloudAppID {
+  umbrella header "IBMCloudAppID-umbrella.h"
+
+  export *
+  module * { export * }
+}

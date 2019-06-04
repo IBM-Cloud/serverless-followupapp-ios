@@ -11,8 +11,9 @@
  */
 
 import UIKit
-import BluemixAppID
+import IBMCloudAppID
 import BMSCore
+import BMSPush
 import Alamofire
 
 class AfterLoginViewController: UIViewController,UITextViewDelegate {
@@ -61,7 +62,7 @@ class AfterLoginViewController: UIViewController,UITextViewDelegate {
         
         let displayName = idToken?.name ?? (idToken?.email?.components(separatedBy: "@"))?[0] ?? "Guest"
         self.successMsg.text = "Welcome " + displayName + ""
-        ServerlessAPI.sharedInstance.addUser(accessToken: accessToken!,idToken: idToken!)
+        ServerlessAPI.sharedInstance.addUser(accessToken: accessToken!,idToken: idToken!, deviceId: BMSClient.sharedInstance.authorizationManager.deviceIdentity.ID!)
     }
     
     class LoginDelegate : AuthorizationDelegate {
@@ -71,9 +72,9 @@ class AfterLoginViewController: UIViewController,UITextViewDelegate {
         init(controller : AfterLoginViewController) {
             self.controller = controller
         }
-        
-        public func onAuthorizationSuccess(accessToken: AccessToken, identityToken: IdentityToken, response:Response?) {
-            
+      
+        public func onAuthorizationSuccess(accessToken: AccessToken?, identityToken: IdentityToken?, refreshToken: RefreshToken?, response: Response?) {
+          if let accessToken = accessToken {
             controller.accessToken = accessToken;
             controller.idToken = identityToken;
             
@@ -87,9 +88,8 @@ class AfterLoginViewController: UIViewController,UITextViewDelegate {
             
             DispatchQueue.main.async {
                 self.controller.showLoginInfo()
-               
             }
-            
+          }
         }
         
         public func onAuthorizationCanceled() {
@@ -101,10 +101,10 @@ class AfterLoginViewController: UIViewController,UITextViewDelegate {
         }
     }
     
-    func topBarClicked(sender: UITapGestureRecognizer) {
+  @objc func topBarClicked(sender: UITapGestureRecognizer) {
 
         if (accessToken?.isAnonymous)! {
-            AppID.sharedInstance.loginWidget?.launch(accessTokenString: TokenStorageManager.sharedInstance.loadStoredToken(), delegate: LoginDelegate(controller: self))
+            AppID.sharedInstance.loginWidget?.launch(delegate: LoginDelegate(controller: self))
         }
     }
 
@@ -144,7 +144,7 @@ class AfterLoginViewController: UIViewController,UITextViewDelegate {
         self.view.endEditing(true)
     }
     
-    func didBecomeActive(_ notification: Notification) {
+  @objc func didBecomeActive(_ notification: Notification) {
         
     }
     
