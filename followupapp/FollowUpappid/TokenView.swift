@@ -12,7 +12,7 @@
 
 
 import UIKit
-import BluemixAppID
+import IBMCloudAppID
 
 class TokenView: UIViewController {
     

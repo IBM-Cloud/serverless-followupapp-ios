@@ -13,11 +13,15 @@
 import UIKit
 import BMSCore
 import BMSPush
-import BluemixAppID
+import IBMCloudAppID
 @UIApplicationMain
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    
+  
+    // TODO: Change to the region where the services have been provisioned
+    let APP_ID_REGION = AppID.REGION_US_SOUTH
+    let PUSH_NOTIFICATIONS_REGION = BMSClient.Region.usSouth
+  
     var window: UIWindow?
     var pushAppGUID: String?
     var pushClientSecret: String?
@@ -25,14 +29,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //Initialize BMSCore SDK.
         let myBMSClient = BMSClient.sharedInstance
-        myBMSClient.initialize(bluemixRegion:BMSClient.Region.usSouth) // TODO: Change to the region of push notifications service.
+        myBMSClient.initialize(bluemixRegion:PUSH_NOTIFICATIONS_REGION)
         myBMSClient.requestTimeout = 10.0 // seconds
         
         // Initialize the AppID instance with your tenant ID and region
         // App Id initialization
         // NOTE: Enable Keychain Sharing capability in Xcode
         if let contents = Bundle.main.path(forResource:"BMSCredentials", ofType: "plist"), let dictionary = NSDictionary(contentsOfFile: contents) {
-            let region = AppID.REGION_US_SOUTH
+            let region = APP_ID_REGION
             let bmsclient = BMSClient.sharedInstance
                 let backendGUID = dictionary["authTenantId"] as? String
                 let serverlessBackendURL = dictionary["serverlessBackendUrl"] as? String
@@ -40,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 pushClientSecret = dictionary["pushClientSecret"] as? String
                 bmsclient.initialize(bluemixRegion: region)
                 let appid = AppID.sharedInstance
-                appid.initialize(tenantId: backendGUID!, bluemixRegion: region)
+                appid.initialize(tenantId: backendGUID!, region: region)
                 let appIdAuthorizationManager = AppIDAuthorizationManager(appid:appid)
                 bmsclient.authorizationManager = appIdAuthorizationManager
             TokenStorageManager.sharedInstance.initialize(tenantId: backendGUID!)

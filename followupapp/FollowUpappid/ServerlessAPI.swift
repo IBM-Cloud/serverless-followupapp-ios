@@ -8,7 +8,7 @@
 
 import Foundation
 import Alamofire
-import BluemixAppID
+import IBMCloudAppID
 
 public class ServerlessAPI{
     

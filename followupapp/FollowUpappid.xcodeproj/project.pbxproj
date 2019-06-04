@@ -14,7 +14,7 @@
 		BD4CE2401E8BDB780018989D /* anonymous.png in Resources */ = {isa = PBXBuildFile; fileRef = BD4CE23F1E8BDB780018989D /* anonymous.png */; };
 		BD4F2CB71E8908E200BF4057 /* TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4F2CB61E8908E200BF4057 /* TokenStorage.swift */; };
 		CFB0DACE856F7BC02E4390CD /* Pods_FollowUpappid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E4A9588D2E02D651A0A0001 /* Pods_FollowUpappid.framework */; };
-		EF440D341E34DF0A008B57C4 /* BuildFile in Resources */ = {isa = PBXBuildFile; };
+		EF440D341E34DF0A008B57C4 /* (null) in Resources */ = {isa = PBXBuildFile; };
 		EFFC7C5F1E34C71500C3CCB5 /* AfterLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFC7C4B1E34C71500C3CCB5 /* AfterLoginViewController.swift */; };
 		EFFC7C601E34C71500C3CCB5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFC7C4C1E34C71500C3CCB5 /* AppDelegate.swift */; };
 		EFFC7C611E34C71500C3CCB5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFFC7C4D1E34C71500C3CCB5 /* Assets.xcassets */; };
@@ -152,7 +152,6 @@
 				EF3DA4601CE0B04D007A2B0A /* Frameworks */,
 				EF3DA4611CE0B04D007A2B0A /* Resources */,
 				EE02DEC27C8EC1506F880E86 /* [CP] Embed Pods Frameworks */,
-				7DCD21DB5B72DE8C551D8D49 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -191,6 +190,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -215,7 +215,7 @@
 				BD4CE2401E8BDB780018989D /* anonymous.png in Resources */,
 				4690A2801E8CE27F00C8D792 /* anonymous user.png in Resources */,
 				EFFC7C6A1E34C71500C3CCB5 /* warning.png in Resources */,
-				EF440D341E34DF0A008B57C4 /* BuildFile in Resources */,
+				EF440D341E34DF0A008B57C4 /* (null) in Resources */,
 				EFFC7C631E34C71500C3CCB5 /* Main.storyboard in Resources */,
 				EFFC7C611E34C71500C3CCB5 /* Assets.xcassets in Resources */,
 				EFFC7C621E34C71500C3CCB5 /* LaunchScreen.storyboard in Resources */,
@@ -244,33 +244,19 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		7DCD21DB5B72DE8C551D8D49 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FollowUpappid/Pods-FollowUpappid-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		EE02DEC27C8EC1506F880E86 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-FollowUpappid/Pods-FollowUpappid-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-FollowUpappid/Pods-FollowUpappid-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/BMSAnalyticsAPI/BMSAnalyticsAPI.framework",
 				"${BUILT_PRODUCTS_DIR}/BMSCore/BMSCore.framework",
 				"${BUILT_PRODUCTS_DIR}/BMSPush/BMSPush.framework",
-				"${BUILT_PRODUCTS_DIR}/BluemixAppID/BluemixAppID.framework",
+				"${BUILT_PRODUCTS_DIR}/IBMCloudAppID/IBMCloudAppID.framework",
+				"${BUILT_PRODUCTS_DIR}/JOSESwift/JOSESwift.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -278,11 +264,12 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BMSAnalyticsAPI.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BMSCore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BMSPush.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BluemixAppID.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IBMCloudAppID.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JOSESwift.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FollowUpappid/Pods-FollowUpappid-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FollowUpappid/Pods-FollowUpappid-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -361,7 +348,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -401,7 +388,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -420,13 +407,13 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = M7XN3GW8UC;
 				INFOPLIST_FILE = "$(SRCROOT)/FollowUpappid/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = FollowUpappidID;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -441,13 +428,13 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = M7XN3GW8UC;
 				INFOPLIST_FILE = "$(SRCROOT)/FollowUpappid/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = FollowUpappidID;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};

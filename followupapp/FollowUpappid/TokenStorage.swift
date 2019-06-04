@@ -12,7 +12,7 @@
 
 
 import Foundation
-import BluemixAppID
+import IBMCloudAppID
 
 
 let tokenServiceName = "appid_access_token_"
