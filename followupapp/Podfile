@@ -3,7 +3,7 @@ platform :ios, '10.0'
 
 target 'FollowUpappid' do
   use_frameworks!
-	pod 'IBMCloudAppID', '6.0.0'
-  pod 'Alamofire', '4.8.2'
-  pod 'BMSPush', '3.4.3'
+	pod 'IBMCloudAppID', '6.0.2'
+  pod 'Alamofire', '~> 5.2'
+  pod 'BMSPush', '3.6.0'
 end
