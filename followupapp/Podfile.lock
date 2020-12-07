@@ -1,22 +1,23 @@
 PODS:
-  - Alamofire (4.8.2)
+  - Alamofire (4.9.1)
   - BMSAnalyticsAPI (2.3.1)
-  - BMSCore (2.4.0):
+  - BMSCore (2.6.0):
     - BMSAnalyticsAPI (~> 2.3)
-  - BMSPush (3.4.3):
+  - BMSPush (3.6.0):
     - BMSCore (~> 2.4)
-  - IBMCloudAppID (6.0.0):
+  - IBMCloudAppID (6.0.2):
     - BMSCore
     - JOSESwift
-  - JOSESwift (1.8.0)
+  - JOSESwift (2.3.0)
 
 DEPENDENCIES:
-  - Alamofire (= 4.8.2)
-  - BMSPush (= 3.4.3)
-  - IBMCloudAppID (= 6.0.0)
+  - Alamofire (~> 4.0)
+  - BMSCore (= 2.6.0)
+  - BMSPush (= 3.6.0)
+  - IBMCloudAppID (= 6.0.2)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - Alamofire
     - BMSAnalyticsAPI
     - BMSCore
@@ -25,13 +26,13 @@ SPEC REPOS:
     - JOSESwift
 
 SPEC CHECKSUMS:
-  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
+  Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
   BMSAnalyticsAPI: f9c740eb3c0857c0955e58a10321a96b5d85304e
-  BMSCore: 73cccdaec5452ab5183afc01e85881bbb8137ef7
-  BMSPush: 561c1e07235decf12092a0b41b9e2a1125fd545f
-  IBMCloudAppID: e0aed9add3fd9ea2bb14040e46a406261cd38550
-  JOSESwift: 39419bb87494bd58d4f14e1a3e3d6615945c80dd
+  BMSCore: 969b124f0170d0113a0926e73118057ca7d1eab3
+  BMSPush: b6621e56286def48d1d3398ff793ba8fcf6ca2ae
+  IBMCloudAppID: 928c22baaf3afdf14a6a98f3ff1b32f134b166ce
+  JOSESwift: 7ad594f49c26aceca2438574e1023327a4a79014
 
-PODFILE CHECKSUM: 4c534e5a2ca89892cb69a85007f70bea209aa3f7
+PODFILE CHECKSUM: d2248d0d4dd6c78a0369ceafac053573855c8591
 
-COCOAPODS: 1.7.1
+COCOAPODS: 1.10.0
